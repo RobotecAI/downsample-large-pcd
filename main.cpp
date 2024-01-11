@@ -48,8 +48,8 @@ int main(int argc, char** argv)
 	std::string inPcd;
 	std::string outPcd;
 	std::array<float, 3> leaf = {0.0f, 0.0f, 0.0f};
-	pcl::console::parse_argument(argc, argv, "-h", showHelp);
-	if (showHelp) {
+	// Help argument
+	if (pcl::console::parse_argument(argc, argv, "-h", showHelp) != -1) {
 		printHelp();
 		return 0;
 	}
