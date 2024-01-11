@@ -27,5 +27,5 @@ The tool has been created to downsample large point clouds with any leaf size. `
 where:
 - `-in input.pcd` - path to the input pcd
 - `-out output.pcd` - path for the output pcd
-- `-leaf x,y,z` - the VoxelGrid leaf size
+- `-leaf x,y,z` - the VoxelGrid leaf size (e.g. `-leaf 0.2,0.2,0.2`)
 - `-binary 1` - (optional) 1 for binary output, 0 (default) for ASCII

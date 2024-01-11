@@ -24,7 +24,7 @@ void printHelp()
 	fmt::print("  where:\n");
 	fmt::print("      -in input.pcd   = input pcd for downsampling\n");
 	fmt::print("      -out output.pcd = output pcd\n");
-	fmt::print("      -leaf x,y,z     = the VoxelGrid leaf size\n");
+	fmt::print("      -leaf x,y,z     = the VoxelGrid leaf size (e.g. `-leaf 0.2,0.2,0.2`)\n");
 	fmt::print("      -binary 1       = (optional) 1 for binary output, 0 (default) for ASCII\n");
 }
 
@@ -106,15 +106,15 @@ int main(int argc, char** argv)
 	                    .maxRange = maxPoint.z,
 	                    .leaf = leaf[2],
 	                    }
-	};
+    };
 
 	// Axis with the most voxel count
-	VoxelAxisHelper selectedVoxelAxis = *std::max_element(voxelAxes.begin(), voxelAxes.end(),
-	                                                      [](auto a, auto b) { return a.getVoxelCount() < b.getVoxelCount(); });
+	const auto& selectedVoxelAxis = *std::max_element(voxelAxes.begin(), voxelAxes.end(),
+	                                                  [](auto a, auto b) { return a.getVoxelCount() < b.getVoxelCount(); });
 
-	size_t voxelCountForOneSlice = (voxelAxes[0].getVoxelCount() * voxelAxes[1].getVoxelCount() *
-	                                voxelAxes[2].getVoxelCount()) /
-	                               selectedVoxelAxis.getVoxelCount();
+	size_t voxelCountForOneSlice = (voxelAxes[0].axis == selectedVoxelAxis.axis ? 1 : voxelAxes[0].getVoxelCount()) *
+	                               (voxelAxes[1].axis == selectedVoxelAxis.axis ? 1 : voxelAxes[1].getVoxelCount()) *
+	                               (voxelAxes[2].axis == selectedVoxelAxis.axis ? 1 : voxelAxes[2].getVoxelCount());
 	size_t sliceCountNotOverflowing = PclVoxelsLimit / voxelCountForOneSlice;
 
 	float currentRangeMin = selectedVoxelAxis.minRange;
