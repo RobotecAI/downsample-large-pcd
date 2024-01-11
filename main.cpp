@@ -15,11 +15,17 @@ constexpr size_t PclVoxelsLimit = std::numeric_limits<std::int32_t>::max();
 
 void printHelp()
 {
-	fmt::print("usage: ./DownsampleLargePCD -in input.pcd -out output.pcd -leaf x,y,z\n");
+	fmt::print("The tool has been written for large point clouds in mind. "
+	           "It slicing point cloud into smaller parts appropriately (to ensure proper filtering), "
+	           "downsampling them and merging downsampled slices into one point cloud\n"
+	           "Reason: `pcl::VoxelGrid` has limitation for number of voxels "
+	           "which refuses to downsample large point clouds for too small leaf size\n");
+	fmt::print("usage: ./DownsampleLargePCD -in input.pcd -out output.pcd -leaf x,y,z -binary 1\n");
 	fmt::print("  where:\n");
 	fmt::print("      -in input.pcd   = input pcd for downsampling\n");
 	fmt::print("      -out output.pcd = output pcd\n");
 	fmt::print("      -leaf x,y,z     = the VoxelGrid leaf size\n");
+	fmt::print("      -binary 1       = (optional) 1 for binary output, 0 (default) for ASCII\n");
 }
 
 struct VoxelAxisHelper
@@ -38,6 +44,7 @@ int main(int argc, char** argv)
 
 	// Parse arguments
 	bool showHelp = false;
+	bool writeBinary = false;
 	std::string inPcd;
 	std::string outPcd;
 	std::array<float, 3> leaf = {0.0f, 0.0f, 0.0f};
@@ -46,6 +53,7 @@ int main(int argc, char** argv)
 		printHelp();
 		return 0;
 	}
+	// Required arguments
 	if (pcl::console::parse_argument(argc, argv, "-in", inPcd) == -1) {
 		fmt::print(stderr, "Argument `-in` is required\n");
 		return -1;
@@ -62,6 +70,8 @@ int main(int argc, char** argv)
 		fmt::print(stderr, "Leaf size must be positive. Got: {}, {}, {}\n", leaf[0], leaf[1], leaf[2]);
 		return -1;
 	}
+	// Optional arguments
+	pcl::console::parse_argument(argc, argv, "-binary", writeBinary);
 
 	fmt::print("Loading input point cloud...\n");
 
@@ -96,7 +106,7 @@ int main(int argc, char** argv)
 	                    .maxRange = maxPoint.z,
 	                    .leaf = leaf[2],
 	                    }
-    };
+	};
 
 	// Axis with the most voxel count
 	VoxelAxisHelper selectedVoxelAxis = *std::max_element(voxelAxes.begin(), voxelAxes.end(),
@@ -135,7 +145,7 @@ int main(int argc, char** argv)
 	}
 
 	fmt::print("Saving to the file...\n");
-	pcl::io::savePCDFile(outPcd, *outCloud, false);
+	pcl::io::savePCDFile(outPcd, *outCloud, writeBinary);
 	fmt::print("Downsampled point cloud has been saved to `{}`\n", outPcd);
 
 	return 0;
