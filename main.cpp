@@ -16,10 +16,10 @@ constexpr size_t PclVoxelsLimit = std::numeric_limits<std::int32_t>::max();
 void printHelp()
 {
 	fmt::print("The tool has been written for large point clouds in mind. "
-	           "It slicing point cloud into smaller parts appropriately (to ensure proper filtering), "
-	           "downsampling them and merging downsampled slices into one point cloud\n"
-	           "Reason: `pcl::VoxelGrid` has limitation for number of voxels "
-	           "which refuses to downsample large point clouds for too small leaf size\n");
+	           "It slices the point cloud into smaller parts appropriately (to ensure proper filtering), "
+	           "downsamples them, and merges downsampled slices into one point cloud\n"
+	           "Reason: `pcl::VoxelGrid` has limitation for the number of voxels "
+	           "which refuses to downsample large point clouds for too small leaf size.\n");
 	fmt::print("usage: ./DownsampleLargePCD -in input.pcd -out output.pcd -leaf x,y,z -binary 1\n");
 	fmt::print("  where:\n");
 	fmt::print("      -in input.pcd   = input pcd for downsampling\n");

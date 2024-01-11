@@ -11,7 +11,7 @@ FetchContent_Declare(fmt
 )
 FetchContent_MakeAvailable(fmt)
 
-find_package(PCL 1.12 REQUIRED COMPONENTS common io filters)
+find_package(PCL 1.12 REQUIRED COMPONENTS io filters)
 
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
